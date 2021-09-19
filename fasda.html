@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.fasda Fixer</title>
+    <script>
+
+        let cleanPart = part => {
+            let chars = part.split('');
+            for (let i = part.search('\n'); i < chars.length; i++) {
+                if (chars[i] !== '-' && chars[i] !== '\n') {
+                    break;
+                }
+                chars[i] = chars[i] == '\n' ? '\n' : '?';
+            }
+            chars = chars.reverse();
+
+            for (let i = 0; i < chars.length; i++) {
+                if (chars[i] !== '-' && chars[i] !== '\n') {
+                    break;
+                }
+                chars[i] = chars[i] == '\n' ? '\n' : '?';
+            }
+            chars = chars.reverse();
+            part = chars.join('');
+            return part;
+        }
+
+        window.onload = () => {
+            document.getElementById("submitButton").addEventListener('click', e => {
+                let files = document.getElementById("files");
+                [...files.files].map(file => {
+                    let reader = new FileReader();
+                    reader.readAsText(file, 'utf-8');
+                    reader.onload = e => {
+                        console.log(file);
+                        let content = e.target.result;
+                        let parts = content.split(/(?=\>)/);
+                        parts = parts.map(part => {
+                            return cleanPart(part);
+                        })
+                        content = parts.join('');
+
+                        let blob = new Blob([content],{type: 'text/plain'});
+                        let newFile = new File([blob], file.name);
+                        
+                        let a = document.createElement('a');
+                        let linkText = document.createTextNode(file.name);
+                        a.appendChild(linkText);
+                        a.href = window.URL.createObjectURL(newFile);
+                        a.download = file.name;
+                        document.body.appendChild(a);
+                        document.body.appendChild(document.createElement('br'));
+                    };
+                });
+
+                e.preventDefault();
+            })
+        };
+    </script>
+</head>
+
+<body>
+    <form enctype="multipart/form-data">
+        <input id="files" type="file" name="my_file[]" multiple>
+        <input id="submitButton" type="button" value="Convert">
+    </form>
+</body>
+
+</html>
