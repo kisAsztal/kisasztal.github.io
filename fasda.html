@@ -6,9 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>.fasda Fixer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
     <script>
 
         let cleanPart = part => {
+            part = part.replace(/(?:\r\n|\r|\n)/g, '\n');
             let chars = part.split('');
             for (let i = part.search('\n'); i < chars.length; i++) {
                 if (chars[i] !== '-' && chars[i] !== '\n') {
@@ -16,6 +19,7 @@
                 }
                 chars[i] = chars[i] == '\n' ? '\n' : '?';
             }
+
             chars = chars.reverse();
 
             for (let i = 0; i < chars.length; i++) {
@@ -26,6 +30,7 @@
             }
             chars = chars.reverse();
             part = chars.join('');
+
             return part;
         }
 
